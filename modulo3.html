@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 3: ACTIVIDAD DE CONTEXTUALIZACIÓN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ESTILOS GLOBALES ESTANDARIZADOS */
+        :root { --sena-green: #39A900; --sena-blue: #00324D; --sena-orange: #FF6C00; --bg-body: #F4F6F9; --bg-card: #FFFFFF; --text-gray: #59667a; --shadow: 0 4px 20px rgba(0,0,0,0.05); --radius: 12px; --menu-width: 280px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* HEADER */
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100; }
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+
+        /* LAYOUT */
+        .main-layout { display: flex; flex: 1; max-width: 1400px; margin: 2rem auto; gap: 2rem; width: 100%; padding: 0 20px; }
+        .sidebar { width: var(--menu-width); background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; height: fit-content; position: sticky; top: 2rem; }
+        .sidebar h3 { font-family: 'Montserrat'; color: var(--sena-green); margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all 0.3s; color: var(--text-gray); font-weight: 500; position: relative; }
+        .menu-item:hover { background: #f0fdf4; color: var(--sena-green); }
+        .menu-item.active { background: var(--sena-green); color: white; box-shadow: 0 4px 10px rgba(57, 169, 0, 0.3); }
+        .menu-item.completed::after { content: '\f00c'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: 15px; color: var(--sena-green); }
+        .menu-item.active.completed::after { color: white; }
+
+        /* CONTENIDO */
+        .content-area { flex: 1; background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem; min-height: 600px; position: relative; overflow: hidden; }
+        .activity-section { display: none; animation: fadeIn 0.5s ease; position: relative; z-index: 2; }
+        .activity-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-header h2 { font-family: 'Montserrat'; color: var(--sena-blue); font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        /* MARCA DE AGUA ESPECÍFICA MÓDULO 3 */
+        .watermark-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/tesoro_pirata.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* COMPONENTES GENERALES */
+        .btn-primary { background: var(--sena-orange); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { background: #e65100; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255, 108, 0, 0.3); }
+
+        /* JUEGO: EN BUSCA DEL TESORO */
+        .game-wrapper {
+            background: #e3f2fd; /* Mar azul claro */
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #90caf9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Barra de progreso visual (Mapa) */
+        .map-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 20px;
+        }
+        .map-progress::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: #bbdefb;
+            z-index: 0;
+            transform: translateY(-50%);
+        }
+        .map-point {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border: 4px solid #bbdefb;
+            border-radius: 50%;
+            z-index: 1;
+            transition: all 0.5s;
+        }
+        .map-point.active {
+            background: var(--sena-orange);
+            border-color: var(--sena-orange);
+            transform: scale(1.3);
+        }
+        .map-point.visited {
+            background: var(--sena-green);
+            border-color: var(--sena-green);
+        }
+
+        /* Escenario del Juego */
+        .game-stage {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .game-image {
+            max-height: 200px;
+            width: auto;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            color: var(--sena-blue);
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .game-option {
+            background: #f5f5f5;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .game-option:hover {
+            background: #e1f5fe;
+            border-color: #0288d1;
+        }
+        .game-option.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+        .game-option.incorrect {
+            background: #ffcdd2;
+            border-color: #ef5350;
+            animation: shake 0.5s;
+        }
+
+        /* Feedback y Navegación */
+        .feedback-msg {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-height: 1.6rem;
+        }
+
+        /* AREA FINAL */
+        .finish-area { margin-top: 2rem; text-align: center; padding: 2rem; background: #e8f5e9; border: 2px dashed var(--sena-green); border-radius: var(--radius); display: none; }
+        .intro-img-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 20px; }
+        .intro-img { max-width: 250px; border-radius: 12px; box-shadow: var(--shadow); }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        @media (max-width: 768px) { .main-layout { flex-direction: column; } .sidebar { width: 100%; position: static; } }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <img src="imagenes/sena.jpg" style="height: 50px;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+        </div>
+        <img src="imagenes/tecnoacademia.jpg" style="height: 50px;">
+    </header>
+
+    <div class="main-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <h3><i class="fas fa-list-ul"></i> Actividades</h3>
+            <div id="menu-1" class="menu-item active" onclick="showSection(1)">1. Misión A: Introducción</div>
+            <div id="menu-2" class="menu-item" onclick="showSection(2)">2. En Busca del Tesoro</div>
+            
+            <div id="menu-final" class="finish-area" style="padding: 10px; margin-top: 20px; display: none;">
+                <p style="font-size:0.9rem; color:var(--sena-green); font-weight:bold; margin-bottom:10px;">¡Misión Cumplida!</p>
+                <button class="btn-primary" style="width:100%; font-size:0.8rem; justify-content:center;" onclick="finishModule()">
+                    Obtener Insignia <i class="fas fa-medal"></i>
+                </button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div class="watermark-bg"></div>
+
+            <!-- SECCIÓN 1: INTRODUCCIÓN -->
+            <div id="sec-1" class="activity-section active">
+                <div class="section-header">
+                    <h2>Misión A: Contextualización ODS</h2>
+                </div>
+                <div style="background: rgba(255,255,255,0.9); padding: 20px; border-radius: 8px;">
+                    <div class="intro-img-container">
+                        <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\ODS.jpg" class="intro-img" alt="Objetivos Desarrollo Sostenible">
+                        <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\Pirata.jpg" class="intro-img" style="max-height: 200px; width:auto;" alt="Personaje Pirata">
+                    </div>
+                    
+                    <p style="text-align: justify; font-size: 1.1rem; margin-bottom: 20px;">
+                        <strong>¡A la orden Capitán!</strong> Esta Misión consiste en descubrir junto a los compañeros de la Academia Makers el importante papel de la biotecnología para salvar su Mundo aplicando los Objetivos de Desarrollo Sostenible (ODS).
+                    </p>
+                    <p style="text-align: justify; margin-bottom: 20px;">
+                        La actividad de esta misión se llama <strong>“En busca del Tesoro”</strong>. Tu facilitador te mostrará qué son y cómo los ODS han transformado el mundo. Posteriormente, deberás navegar y responder las pistas que se te irán dando hasta llegar al tesoro escondido.
+                    </p>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn-primary" onclick="markComplete(1); showSection(2); initGame();">
+                            <i class="fas fa-ship"></i> Zarpar hacia el Tesoro
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: JUEGO DEL TESORO -->
+            <div id="sec-2" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-map-marked-alt"></i> En Busca del Tesoro</h2>
+                </div>
+                
+                <div class="game-wrapper">
+                    <!-- Mapa de Progreso -->
+                    <div class="map-progress" id="map-bar">
+                        <!-- Puntos generados por JS -->
+                    </div>
+
+                    <!-- Escenario del Juego -->
+                    <div class="game-stage" id="game-content">
+                        <!-- Contenido dinámico (Preguntas/Final) -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- AREA FINAL MENSAJE -->
+            <div id="final-msg-area" class="finish-area">
+                <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\01 - Insignias MOHS-Plata.jpg" style="max-width: 120px; display: block; margin: 0 auto 15px;" alt="Insignia Plata">
+                <h2 style="color: var(--sena-green);">¡Tesoro Encontrado!</h2>
+                <p style="color: var(--text-gray); font-size: 1.1rem; margin-top: 10px;">
+                    ¡En esta actividad obtendrás la Insignia Plata, ya has comenzado, no te detengas!
+                </p>
+                <button class="btn-primary" onclick="finishModule()" style="margin-top: 15px;">
+                    Regresar al Mapa Principal
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN GLOBAL ---
+        let progress = [false, false]; // Intro, Juego
+        const moduleId = 3;
+
+        // --- DATOS DEL JUEGO (8 Preguntas NUEVAS para reconocer ODS) ---
+        const gameQuestions = [
+            {
+                q: "¿Qué son los Objetivos de Desarrollo Sostenible (ODS)?",
+                options: [
+                    "Reglas para viajar al espacio.",
+                    "17 objetivos globales para proteger el planeta y asegurar la prosperidad.",
+                    "Una lista de ingredientes para biotecnología."
+                ],
+                correct: 1, 
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            },
+            {
+                q: "¿Cómo ayuda la biotecnología al ODS 2: Hambre Cero?",
+                options: [
+                    "Creando cultivos más resistentes y nutritivos.",
+                    "Haciendo comida de plástico.",
+                    "Eliminando todas las granjas."
+                ],
+                correct: 0,
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            },
+            {
+                q: "El ODS 3 busca garantizar una vida sana. ¿Qué aporte hace la biotecnología?",
+                options: [
+                    "Construye más hospitales.",
+                    "Desarrolla vacunas, medicinas y tratamientos.",
+                    "Vende seguros médicos."
+                ],
+                correct: 1,
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            },
+            {
+                q: "¿Cuál ODS se relaciona con el uso de bacterias para limpiar el agua contaminada?",
+                options: [
+                    "ODS 1: Fin de la Pobreza.",
+                    "ODS 6: Agua limpia y saneamiento.",
+                    "ODS 10: Reducción de las desigualdades."
+                ],
+                correct: 1,
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            },
+            {
+                q: "La producción de biocombustibles a partir de plantas apoya al:",
+                options: [
+                    "ODS 7: Energía asequible y no contaminante.",
+                    "ODS 4: Educación de calidad.",
+                    "ODS 16: Paz, justicia e instituciones sólidas."
+                ],
+                correct: 0,
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            },
+            {
+                q: "¿Qué ODS combatimos al reducir los gases de efecto invernadero?",
+                options: [
+                    "ODS 13: Acción por el clima.",
+                    "ODS 5: Igualdad de género.",
+                    "ODS 17: Alianzas para lograr los objetivos."
+                ],
+                correct: 0,
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            },
+            {
+                q: "¿Cuál es el objetivo principal del ODS 1?",
+                options: [
+                    "Que todos tengan internet.",
+                    "Poner fin a la pobreza en todas sus formas en todo el mundo.",
+                    "Viajar a otros planetas."
+                ],
+                correct: 1,
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            },
+            {
+                q: "El ODS 15 busca proteger la vida de:",
+                options: [
+                    "Los ecosistemas terrestres y los bosques.",
+                    "Los peces en el fondo del mar.",
+                    "Las aves migratorias solamente."
+                ],
+                correct: 0,
+                image: "C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Pista_game.jpg"
+            }
+        ];
+
+        let currentQIndex = 0;
+
+        // --- NAVEGACIÓN BÁSICA ---
+        function showSection(id) {
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('menu-' + id).classList.add('active');
+            document.querySelectorAll('.activity-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('sec-' + id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function markComplete(id) {
+            if (!progress[id-1]) {
+                progress[id-1] = true;
+                document.getElementById('menu-' + id).classList.add('completed');
+                checkAllComplete();
+            }
+        }
+
+        function checkAllComplete() {
+            if (progress.every(Boolean)) {
+                document.getElementById('menu-final').style.display = 'block';
+                document.getElementById('final-msg-area').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('final-msg-area').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+        }
+
+        // --- LÓGICA DEL JUEGO ---
+        function initGame() {
+            currentQIndex = 0;
+            renderMap();
+            renderStartScreen();
+        }
+
+        function renderMap() {
+            const mapContainer = document.getElementById('map-bar');
+            mapContainer.innerHTML = '';
+            // Puntos: Inicio + Preguntas + Final
+            const totalPoints = gameQuestions.length + 2; 
+            
+            for(let i=0; i < totalPoints; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'map-point';
+                if(i === 0) dot.classList.add('visited'); // Inicio
+                mapContainer.appendChild(dot);
+            }
+        }
+
+        function updateMap(step) {
+            const dots = document.querySelectorAll('.map-point');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('active');
+                if(index <= step) dot.classList.add('visited');
+                if(index === step) dot.classList.add('active');
+            });
+        }
+
+        function renderStartScreen() {
+            updateMap(0);
+            const container = document.getElementById('game-content');
+            container.innerHTML = `
+                <img src="C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Barco_game.jpg" class="game-image" alt="Barco">
+                <h3 style="color:var(--sena-blue);">¡Barco listo para zarpar!</h3>
+                <p>Navega por las islas del conocimiento respondiendo correctamente.</p>
+                <button class="btn-primary" style="margin-top:20px;" onclick="renderQuestion()">Comenzar Travesía</button>
+            `;
+        }
+
+        function renderQuestion() {
+            if(currentQIndex >= gameQuestions.length) {
+                renderVictory();
+                return;
+            }
+
+            // Actualizar mapa (Index + 1 porque el 0 es start)
+            updateMap(currentQIndex + 1);
+
+            const qData = gameQuestions[currentQIndex];
+            const container = document.getElementById('game-content');
+            
+            let optionsHtml = '';
+            qData.options.forEach((opt, idx) => {
+                optionsHtml += `<div class="game-option" onclick="checkAnswer(${idx}, this)">${opt}</div>`;
+            });
+
+            container.innerHTML = `
+                <img src="${qData.image}" class="game-image" alt="Pista">
+                <p class="question-text">Pista #${currentQIndex + 1}: ${qData.q}</p>
+                <div class="options-grid">
+                    ${optionsHtml}
+                </div>
+                <div id="feedback" class="feedback-msg"></div>
+                <button id="next-btn" class="btn-primary" style="display:none; margin-top:20px;" onclick="nextQuestion()">
+                    Avanzar a la siguiente coordenada <i class="fas fa-arrow-right"></i>
+                </button>
+            `;
+        }
+
+        function checkAnswer(selectedIndex, element) {
+            // Prevenir múltiples clics si ya se respondió correctamente
+            if(document.querySelector('.game-option.correct')) return;
+
+            const qData = gameQuestions[currentQIndex];
+            const feedback = document.getElementById('feedback');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (selectedIndex === qData.correct) {
+                element.classList.add('correct');
+                feedback.style.color = 'var(--sena-green)';
+                feedback.innerHTML = '<i class="fas fa-check-circle"></i> ¡Correcto! El barco avanza.';
+                nextBtn.style.display = 'inline-flex';
+                // Bloquear otras opciones
+                document.querySelectorAll('.game-option').forEach(el => el.style.pointerEvents = 'none');
+            } else {
+                element.classList.add('incorrect');
+                feedback.style.color = '#d32f2f';
+                feedback.innerHTML = '<i class="fas fa-times-circle"></i> Respuesta incorrecta. Inténtalo de nuevo.';
+                setTimeout(() => {
+                    element.classList.remove('incorrect');
+                }, 1000);
+            }
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            renderQuestion();
+        }
+
+        function renderVictory() {
+            updateMap(gameQuestions.length + 1); // Último punto
+            const container = document.getElementById('game-content');
+            container.innerHTML = `
+                <img src="C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Isla_game.jpg" class="game-image" style="max-height:150px;" alt="Isla">
+                <img src="C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Tesoro_game.jpg" class="game-image" style="max-height:100px; animation:none;" alt="Tesoro">
+                <h2 style="color:var(--sena-orange);">¡Has encontrado el Tesoro de los ODS!</h2>
+                <p>Tu conocimiento es la llave para un futuro sostenible.</p>
+            `;
+            
+            // Marcar juego completo
+            markComplete(2);
+        }
+
+        // --- FINALIZAR MÓDULO ---
+        function finishModule() {
+            const currentModule = 3;
+            const nextModule = 4;
+            
+            const savedState = localStorage.getItem('biotechState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                if (!state.completedModules.includes(currentModule)) state.completedModules.push(currentModule);
+                if (!state.unlockedModules.includes(nextModule)) state.unlockedModules.push(nextModule);
+                localStorage.setItem('biotechState', JSON.stringify(state));
+                alert("¡Progreso Guardado! Has ganado la Insignia Plata.");
+                window.location.href = 'index.html';
+            } else {
+                // Fallback state
+                const vexiq = localStorage.getItem('vexIqState');
+                if(vexiq) {
+                    const state = JSON.parse(vexiq);
+                    if (!state.completedModules.includes(currentModule)) state.completedModules.push(currentModule);
+                    if (!state.unlockedModules.includes(nextModule)) state.unlockedModules.push(nextModule);
+                    localStorage.setItem('vexIqState', JSON.stringify(state));
+                }
+                alert("¡Módulo Finalizado! Regresando al inicio.");
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

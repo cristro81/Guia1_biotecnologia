@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 7: Glosario Técnico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ESTILOS GLOBALES */
+        :root { --sena-green: #39A900; --sena-blue: #00324D; --sena-orange: #FF6C00; --bg-body: #F4F6F9; --bg-card: #FFFFFF; --text-gray: #59667a; --shadow: 0 4px 20px rgba(0,0,0,0.05); --radius: 12px; --menu-width: 280px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+        
+        /* MARCA DE AGUA (Añadida según instrucciones) */
+        .watermark-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/Fondo_laboratorio.jpg');
+            background-size: cover; background-position: center; 
+            opacity: 0.25; /* No muy transparente */
+            z-index: -1; 
+            pointer-events: none;
+            position: fixed;
+        }
+
+        /* HEADER */
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100; position: relative;}
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+
+        /* LAYOUT */
+        .main-layout { display: flex; flex: 1; max-width: 1400px; margin: 2rem auto; gap: 2rem; width: 100%; padding: 0 20px; z-index: 1; position: relative;}
+        .sidebar { width: var(--menu-width); background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; height: fit-content; position: sticky; top: 2rem; }
+        .sidebar h3 { font-family: 'Montserrat'; color: var(--sena-green); margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all 0.3s; color: var(--text-gray); font-weight: 500; }
+        .menu-item.active { background: var(--sena-green); color: white; box-shadow: 0 4px 10px rgba(57, 169, 0, 0.3); }
+
+        /* CONTENIDO GLOSARIO */
+        .content-area { flex: 1; background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem; min-height: 600px; }
+        
+        .section-header h2 { font-family: 'Montserrat'; color: var(--sena-blue); font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        /* BUSCADOR */
+        .search-box { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: var(--radius); font-size: 1rem; margin-bottom: 2rem; transition: border-color 0.3s; background: #f9f9f9 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 98% center; }
+        .search-box:focus { border-color: var(--sena-green); outline: none; background-color: #fff; }
+
+        /* ACORDEÓN DE TÉRMINOS */
+        .glossary-list { display: flex; flex-direction: column; gap: 15px; }
+        
+        .glossary-item { border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: all 0.3s ease; }
+        .glossary-item:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-color: var(--sena-blue); }
+        
+        .glossary-term { background: #f8f9fa; padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: var(--sena-blue); font-family: 'Montserrat'; font-size: 1.1rem; }
+        .glossary-term:hover { background: #e3f2fd; }
+        .glossary-term i { transition: transform 0.3s; color: var(--sena-green); }
+        
+        .glossary-def { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; background: white; padding: 0 20px; border-top: 1px solid transparent; }
+        
+        /* ESTADO ACTIVO */
+        .glossary-item.active { border-color: var(--sena-green); }
+        .glossary-item.active .glossary-term { background: var(--sena-green); color: white; }
+        .glossary-item.active .glossary-term i { transform: rotate(180deg); color: white; }
+        .glossary-item.active .glossary-def { max-height: 500px; padding: 20px; border-top-color: #eee; }
+
+        /* IMAGEN EN DEFINICIÓN Y AMBIENTALES */
+        .def-content { display: flex; gap: 20px; align-items: flex-start; }
+        .def-text { flex: 1; font-size: 1rem; color: #555; }
+        .def-img { max-width: 200px; border-radius: 8px; border: 1px solid #ddd; padding: 5px; background: white; }
+
+        .ambient-images { display: flex; justify-content: center; gap: 20px; margin-bottom: 2rem; }
+        .ambient-images img { height: 120px; border-radius: 12px; object-fit: cover; border: 2px solid var(--sena-green); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+        /* BOTÓN FINALIZAR */
+        .finish-area { margin-top: 2rem; padding: 20px; background: #e8f5e9; border-radius: var(--radius); text-align: center; border: 2px dashed var(--sena-green); display: none; }
+        .btn-primary { background: var(--sena-orange); color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        .btn-primary:hover { background: #e65100; }
+
+        @media (max-width: 768px) { .main-layout { flex-direction: column; } .sidebar { width: 100%; position: static; } .def-content { flex-direction: column; } .ambient-images { flex-wrap: wrap; } }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="watermark-bg"></div>
+
+    <header>
+        <div class="header-left">
+            <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\SENA_T.jpg" style="height: 50px;" alt="Logo SENA">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+        </div>
+        <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\TECNO_V.jpg" style="height: 50px;" alt="Logo Tecnoacademia">
+    </header>
+
+    <div class="main-layout">
+        <aside class="sidebar">
+            <h3><i class="fas fa-book"></i> Navegación</h3>
+            <div class="menu-item active"><i class="fas fa-list"></i> Lista de Términos</div>
+            
+            <div id="menu-final" class="finish-area" style="display: block;">
+                <p style="margin-bottom:10px; color:var(--sena-green); font-weight:bold;">¡Curso Completado!</p>
+                <button class="btn-primary" onclick="finishModule()">
+                    <i class="fas fa-medal"></i> Graduarse
+                </button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div class="ambient-images">
+                <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\TECNOBOT MEGAFONO.jpg" alt="Tecnobot">
+                <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\Dr. Patarroyo.jpg" alt="Dr Patarroyo">
+                <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\Dra. Rosalind.jpg" alt="Dra Rosalind">
+            </div>
+
+            <div class="section-header">
+                <h2>Módulo 7: Glosario Técnico</h2>
+                <p>Conceptos clave para tu formación como Maker.</p>
+            </div>
+
+            <input type="text" class="search-box" placeholder="Buscar término..." onkeyup="filterGlossary(this.value)">
+
+            <div class="glossary-list" id="glossary-list">
+                
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Agricultura</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Disciplina científica que se enfoca en el cultivo de plantas y la producción de alimentos, fibras, combustibles y otros productos agrícolas.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Bioética</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Estudio de los problemas éticos originados por la investigación biológica y sus aplicaciones, como en la ingeniería genética o la clonación.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Biología</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Ciencia que se encarga del estudio de los seres vivos y su relación con el medio ambiente.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Bioseguridad</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Conjunto de medidas para la prevención de riesgos para la salud y el medio ambiente provocados por agentes biológicos.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Biotecnología</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Disciplina científica que utiliza organismos vivos, células y moléculas para desarrollar productos y procesos tecnológicos.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Biotecnología moderna</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Se refiere al uso de técnicas y herramientas avanzadas para modificar genéticamente organismos vivos y crear nuevos productos.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Biotecnología tradicional</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Se refiere a las técnicas y prácticas tradicionales de selección y cría de plantas y animales que se han utilizado durante siglos.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Célula</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Unidad básica de la vida, que contiene material genético y realiza las funciones necesarias para mantener a un organismo vivo.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Ciencia</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Conocimiento sistemático y empírico sobre el mundo natural, obtenido a través de la observación y la experimentación.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Colores de la biotecnología</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Se refiere a las diferentes áreas de la biotecnología, que se dividen en cuatro categorías: rojo, verde, blanco y azul.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Desarrollo científico</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Proceso de investigación y descubrimiento que lleva al avance del conocimiento en una determinada disciplina científica.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Disciplina científica</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Campo de estudio que se enfoca en un área específica del conocimiento científico.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Ingeniería de prototipado</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Proceso de diseño y construcción de modelos preliminares de productos o sistemas para probar su funcionamiento y hacer mejoras.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Innovación</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Proceso de creación y desarrollo de nuevos productos, servicios o procesos que satisfacen las necesidades y deseos de las personas.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Maqueta</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Modelo a escala de un producto o sistema que se utiliza para evaluar su apariencia, funcionamiento y diseño.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Micro: bit</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Placa programable diseñada para enseñar programación y electrónica a los niños.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Microorganismos</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Organismos vivos demasiado pequeños para ser vistos a simple vista, como bacterias, virus, hongos y protozoos.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Sensores</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Dispositivos que convierten señales físicas o químicas en señales eléctricas o digitales, utilizados para medir y monitorear variables como temperatura, presión, luz y sonido.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term" onclick="toggleItem(this)">
+                        <span>Tecnología</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="glossary-def">
+                        <div class="def-content">
+                            <div class="def-text">Conjunto de herramientas, técnicas y conocimientos utilizados para desarrollar productos y servicios que satisfacen las necesidades humanas.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleItem(element) {
+            // Cerrar otros (comportamiento de acordeón estricto)
+            document.querySelectorAll('.glossary-item').forEach(item => {
+                if(item !== element.parentElement) item.classList.remove('active');
+            });
+
+            // Alternar el actual
+            element.parentElement.classList.toggle('active');
+        }
+
+        function filterGlossary(query) {
+            const filter = query.toUpperCase();
+            const items = document.querySelectorAll('.glossary-item');
+            
+            items.forEach(item => {
+                const text = item.querySelector('.glossary-term span').innerText;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        function finishModule() {
+            const savedState = localStorage.getItem('biotechState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                // Marcar Módulo 7 completado
+                if (!state.completedModules.includes(7)) state.completedModules.push(7);
+                
+                localStorage.setItem('biotechState', JSON.stringify(state));
+                alert("¡Felicidades! Has completado el Glosario y finalizado el curso.");
+                window.location.href = 'index.html';
+            } else {
+                // Manejo de emergencia por si el localStorage está vacío
+                const newState = { completedModules: [7], unlockedModules: [] };
+                localStorage.setItem('biotechState', JSON.stringify(newState));
+                alert("¡Felicidades! Has completado el Glosario y finalizado el curso.");
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

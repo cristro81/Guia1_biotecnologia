@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 2: REFLEXIÓN INICIAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ESTILOS GLOBALES ESTANDARIZADOS */
+        :root { --sena-green: #39A900; --sena-blue: #00324D; --sena-orange: #FF6C00; --bg-body: #F4F6F9; --bg-card: #FFFFFF; --text-gray: #59667a; --shadow: 0 4px 20px rgba(0,0,0,0.05); --radius: 12px; --menu-width: 280px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* HEADER */
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100; }
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+
+        /* LAYOUT */
+        .main-layout { display: flex; flex: 1; max-width: 1400px; margin: 2rem auto; gap: 2rem; width: 100%; padding: 0 20px; }
+        .sidebar { width: var(--menu-width); background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; height: fit-content; position: sticky; top: 2rem; }
+        .sidebar h3 { font-family: 'Montserrat'; color: var(--sena-green); margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all 0.3s; color: var(--text-gray); font-weight: 500; position: relative; }
+        .menu-item:hover { background: #f0fdf4; color: var(--sena-green); }
+        .menu-item.active { background: var(--sena-green); color: white; box-shadow: 0 4px 10px rgba(57, 169, 0, 0.3); }
+        .menu-item.completed::after { content: '\f00c'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: 15px; color: var(--sena-green); }
+        .menu-item.active.completed::after { color: white; }
+
+        /* CONTENIDO */
+        .content-area { flex: 1; background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem; min-height: 600px; position: relative; overflow: hidden; }
+        .activity-section { display: none; animation: fadeIn 0.5s ease; position: relative; z-index: 2; }
+        .activity-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-header h2 { font-family: 'Montserrat'; color: var(--sena-blue); font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        /* Marca de Agua Específica */
+        .watermark-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/salón_2.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15; /* No tan transparente pero legible */
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* COMPONENTES DE INTERACCIÓN */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius); background: black; margin-bottom: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: var(--sena-blue); }
+        .form-group textarea { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; min-height: 100px; font-family: 'Roboto', sans-serif; resize: vertical; transition: border-color 0.3s; }
+        .form-group textarea:focus { border-color: var(--sena-green); outline: none; }
+        .btn-primary { background: var(--sena-orange); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { background: #e65100; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255, 108, 0, 0.3); }
+
+        /* JUEGO DE GLOBOS (MATCH) */
+        .balloon-game-container { margin-top: 2rem; }
+        .balloon-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; min-height: 150px; border-radius: 12px; margin-bottom: 20px; transition: all 0.3s; }
+        .balloon-area.red-zone { background-color: rgba(255, 235, 238, 0.5); border: 2px dashed #ffcdd2; }
+        .balloon-area.blue-zone { background-color: rgba(227, 242, 253, 0.5); border: 2px dashed #bbdefb; }
+        
+        .balloon { width: 100px; height: 120px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; color: white; font-weight: bold; font-size: 0.8rem; padding: 10px; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1), 2px 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s; animation: float 3s ease-in-out infinite; }
+        .balloon::before { content: ""; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 10px solid currentColor; }
+        .balloon::after { content: ""; position: absolute; bottom: -25px; left: 50%; width: 1px; height: 20px; background: #999; }
+        
+        .balloon:hover { transform: scale(1.1) translateY(-10px); z-index: 10; }
+        .balloon.popped { transform: scale(0); opacity: 0; transition: all 0.5s; }
+        .balloon.selected { transform: scale(1.2); box-shadow: 0 0 15px rgba(0,0,0,0.3); border: 2px solid white; z-index: 100; }
+
+        .balloon-red { background: linear-gradient(135deg, #ff5252, #d32f2f); color: #d32f2f; } /* Pseudo element color trick */
+        .balloon-red::before { border-top-color: #d32f2f; }
+        .balloon-blue { background: linear-gradient(135deg, #448aff, #1976d2); color: #1976d2; }
+        .balloon-blue::before { border-top-color: #1976d2; }
+        
+        /* Texto dentro del globo */
+        .b-text { color: white; z-index: 2; pointer-events: none; line-height: 1.2; }
+
+        .match-board { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .match-board th, .match-board td { padding: 12px; border: 1px solid #eee; text-align: left; }
+        .match-board th { background-color: var(--sena-blue); color: white; }
+        .match-board tr.success-row { background-color: #e8f5e9; animation: highlightRow 1s ease; }
+        
+        @keyframes highlightRow { 0% { background: #a5d6a7; } 100% { background: #e8f5e9; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        /* AREA FINAL */
+        .finish-area { margin-top: 2rem; text-align: center; padding: 2rem; background: #e8f5e9; border: 2px dashed var(--sena-green); border-radius: var(--radius); display: none; }
+
+        .helper-img { max-width: 150px; float: right; margin: 0 0 15px 15px; border-radius: 50%; border: 3px solid var(--sena-green); box-shadow: var(--shadow); }
+
+        @media (max-width: 768px) { .main-layout { flex-direction: column; } .sidebar { width: 100%; position: static; } .helper-img { float: none; display: block; margin: 0 auto 15px; } }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <img src="imagenes/sena.jpg" style="height: 50px;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+        </div>
+        <img src="imagenes/tecnoacademia.jpg" style="height: 50px;">
+    </header>
+
+    <div class="main-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <h3><i class="fas fa-list-ul"></i> Actividades</h3>
+            <div id="menu-1" class="menu-item active" onclick="showSection(1)">1. Misión M: Introducción</div>
+            <div id="menu-2" class="menu-item" onclick="showSection(2)">2. Video Foro: Conflictos</div>
+            <div id="menu-3" class="menu-item" onclick="showSection(3)">3. Juego: Concordancia</div>
+            
+            <div id="menu-final" class="finish-area" style="padding: 10px; margin-top: 20px; display: none;">
+                <p style="font-size:0.9rem; color:var(--sena-green); font-weight:bold; margin-bottom:10px;">¡Módulo Completado!</p>
+                <button class="btn-primary" style="width:100%; font-size:0.8rem; justify-content:center;" onclick="finishModule()">
+                    Avanzar Siguiente Nivel <i class="fas fa-forward"></i>
+                </button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <!-- MARCA DE AGUA FONDO -->
+            <div class="watermark-bg"></div>
+
+            <!-- SECCIÓN 1: INTRODUCCIÓN -->
+            <div id="sec-1" class="activity-section active">
+                <div class="section-header">
+                    <h2>Misión M: Reflexión Inicial</h2>
+                </div>
+                <div style="background: rgba(255,255,255,0.9); padding: 20px; border-radius: 8px;">
+                    <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\CellEste.jpg" class="helper-img" alt="Personaje Guía">
+                    <p style="text-align: justify; font-size: 1.1rem; margin-bottom: 20px;">
+                        <strong>¡Hola Maker!</strong> En esta misión, tendrás como reto inspirar a tus compañeros de la Academia Makers en aprender a solucionar los conflictos y pintarlos con los colores de la biotecnología.
+                    </p>
+                    <p style="text-align: justify; margin-bottom: 20px;">
+                        La primera actividad de esta misión será responder <strong>¿CÓMO SOLUCIONA CONFLICTOS UN MAKER?</strong> Para esto, observarás el video y posteriormente participarás respondiendo las preguntas de reflexión.
+                        <br><br>
+                        Finalmente, pondrás a prueba tus conceptos con un reto de apareamiento de globos.
+                    </p>
+
+                    <!-- SECCIÓN INSERCIÓN: INSIGNIA Y MENSAJE -->
+                    <div style="text-align: center; margin: 30px 0;">
+                        <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\00 - Insignias MOHS-Bronce.jpg" style="max-width: 120px; display: block; margin: 0 auto 10px;" alt="Insignia Bronce">
+                        <p style="color: var(--sena-orange); font-weight: bold; font-size: 1.1rem; text-transform: uppercase;">
+                            Al finalizar esta actividad obtendras la Insignia Bronce, adelante conviertete en un Maker!
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn-primary" onclick="markComplete(1); showSection(2);">
+                            <i class="fas fa-play"></i> Aceptar Misión y Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: VIDEO FORO -->
+            <div id="sec-2" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-video"></i> Video Foro: Resolución de Conflictos</h2>
+                </div>
+                <div style="background: rgba(255,255,255,0.95); padding: 20px; border-radius: 8px;">
+                    <p style="margin-bottom: 15px;">Observa el siguiente video con atención:</p>
+                    
+                    <div class="video-container">
+                        <video controls>
+                            <source src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\videos\Conflictos.mp4" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+
+                    <h3 style="color:var(--sena-orange); margin-bottom:15px;">Reflexiona y Responde:</h3>
+                    
+                    <div class="form-group">
+                        <label>1. ¿Cómo actúas cuando te enfrentas a un problema difícil de resolver en tu vida?</label>
+                        <textarea id="q1" placeholder="Escribe tu reflexión aquí..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. ¿Cómo crees que se deben enfrentar las situaciones difíciles que nos traen grandes retos en nuestra casa, en las relaciones con los demás o en el estudio?</label>
+                        <textarea id="q2" placeholder="Comparte tu opinión..."></textarea>
+                    </div>
+
+                    <button class="btn-primary" onclick="validateForum()">
+                        <i class="fas fa-save"></i> Guardar Respuestas
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: MATCH GAME -->
+            <div id="sec-3" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-puzzle-piece"></i> Encuentra la Concordancia</h2>
+                </div>
+                <div style="background: rgba(255,255,255,0.95); padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\TECNOBOT CABEZA.jpg" style="width: 80px; border-radius: 50%;" alt="Tecnobot">
+                        <p><strong>Instrucciones:</strong> Haz clic en un <strong>Globo Rojo (Concepto)</strong> y luego en su correspondiente <strong>Globo Azul (Descripción)</strong> para conectarlos. ¡Explótalos todos para llenar el tablero!</p>
+                    </div>
+
+                    <div class="balloon-game-container">
+                        <h4 style="color:var(--sena-orange);">Conceptos (Rojo)</h4>
+                        <div class="balloon-area red-zone" id="red-container">
+                            <!-- Globos rojos generados por JS -->
+                        </div>
+
+                        <h4 style="color:var(--sena-blue); margin-top: 20px;">Descripciones (Azul)</h4>
+                        <div class="balloon-area blue-zone" id="blue-container">
+                            <!-- Globos azules generados por JS -->
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Tablero de Aciertos</h3>
+                    <table class="match-board">
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Significado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="board-body">
+                            <!-- Filas agregadas dinámicamente -->
+                        </tbody>
+                    </table>
+                    <p id="game-status" style="text-align: center; margin-top: 10px; color: var(--text-gray); font-style: italic;">Aciertos: 0 / 5</p>
+                </div>
+            </div>
+
+            <div id="final-msg-area" class="finish-area">
+                <h2 style="color: var(--sena-green);">¡Excelente Trabajo Maker!</h2>
+                <p>Has completado la reflexión inicial y demostrado tus habilidades para la resolución de conflictos.</p>
+                <button class="btn-primary" onclick="finishModule()" style="margin-top: 15px;">
+                    Ir al Centro de Comando
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- LÓGICA BASE ---
+        let progress = [false, false, false]; // Intro, Video, Game
+        const totalActivities = 3;
+
+        function showSection(id) {
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('menu-' + id).classList.add('active');
+            document.querySelectorAll('.activity-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('sec-' + id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function markComplete(id) {
+            if (!progress[id-1]) {
+                progress[id-1] = true;
+                document.getElementById('menu-' + id).classList.add('completed');
+                checkAllComplete();
+            }
+        }
+
+        function checkAllComplete() {
+            if (progress.every(Boolean)) {
+                document.getElementById('menu-final').style.display = 'block';
+                document.getElementById('final-msg-area').style.display = 'block';
+                // Animación de scroll al final si se completa la última actividad
+                setTimeout(() => {
+                    document.getElementById('final-msg-area').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+        }
+
+        function finishModule() {
+            const currentModule = 2; // MODULO 2
+            const nextModule = 3;
+            
+            // Usamos 'biotechState' para consistencia con el index.html generado anteriormente
+            const savedState = localStorage.getItem('biotechState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                if (!state.completedModules.includes(currentModule)) state.completedModules.push(currentModule);
+                if (!state.unlockedModules.includes(nextModule)) state.unlockedModules.push(nextModule);
+                localStorage.setItem('biotechState', JSON.stringify(state));
+                alert("¡Módulo Finalizado! Progreso Guardado.");
+                window.location.href = 'index.html';
+            } else {
+                // Fallback por si acaso se usa la otra key
+                const vexiq = localStorage.getItem('vexIqState');
+                if(vexiq) {
+                    const state = JSON.parse(vexiq);
+                    if (!state.completedModules.includes(currentModule)) state.completedModules.push(currentModule);
+                    if (!state.unlockedModules.includes(nextModule)) state.unlockedModules.push(nextModule);
+                    localStorage.setItem('vexIqState', JSON.stringify(state));
+                }
+                alert("¡Módulo Finalizado! Regresando al inicio.");
+                window.location.href = 'index.html';
+            }
+        }
+
+        // --- LÓGICA ACTIVIDAD 1: INTRO (Misión M) ---
+        // Se maneja directamente en el onclick del botón en HTML (markComplete(1))
+
+        // --- LÓGICA ACTIVIDAD 2: VIDEO FORO ---
+        function validateForum() {
+            const a1 = document.getElementById('q1').value.trim();
+            const a2 = document.getElementById('q2').value.trim();
+
+            if (a1.length > 10 && a2.length > 10) {
+                alert("¡Respuestas registradas! Has desbloqueado la siguiente actividad.");
+                markComplete(2);
+                showSection(3); // Auto avanzar
+            } else {
+                alert("Por favor, desarrolla un poco más tus respuestas (mínimo 10 caracteres cada una).");
+            }
+        }
+
+        // --- LÓGICA ACTIVIDAD 3: MATCH GAME (GLOBOS) ---
+        const concepts = [
+            { id: 1, text: "Escucha Activa", desc: "Prestar atención completa y respetuosa a quien habla." },
+            { id: 2, text: "Empatía", desc: "Capacidad de ponerse en el lugar del otro para entenderlo." },
+            { id: 3, text: "Diálogo", desc: "Conversación constructiva para buscar acuerdos comunes." },
+            { id: 4, text: "Tolerancia", desc: "Respeto hacia las opiniones o actitudes diferentes a las propias." },
+            { id: 5, text: "Mediación", desc: "Proceso donde un tercero neutral ayuda a resolver el conflicto." }
+        ];
+
+        let selectedRed = null;
+        let matchesFound = 0;
+
+        function initGame() {
+            const redContainer = document.getElementById('red-container');
+            const blueContainer = document.getElementById('blue-container');
+            
+            // Mezclar arrays
+            const shuffledRed = [...concepts].sort(() => Math.random() - 0.5);
+            const shuffledBlue = [...concepts].sort(() => Math.random() - 0.5);
+
+            // Renderizar Globos Rojos
+            shuffledRed.forEach(item => {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon balloon-red';
+                balloon.dataset.id = item.id;
+                balloon.innerHTML = `<span class="b-text">${item.text}</span>`;
+                balloon.onclick = () => selectRed(balloon);
+                redContainer.appendChild(balloon);
+            });
+
+            // Renderizar Globos Azules
+            shuffledBlue.forEach(item => {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon balloon-blue';
+                balloon.dataset.id = item.id;
+                balloon.innerHTML = `<span class="b-text">?</span>`; // Oculto al principio o texto corto
+                // Para este ejercicio, mostraremos texto al hover o click, o texto resumido.
+                // Vamos a poner el texto visible pero pequeño para que sea jugable
+                balloon.innerHTML = `<span class="b-text" style="font-size:0.6rem;">${item.desc}</span>`;
+                balloon.onclick = () => checkMatch(balloon, item);
+                blueContainer.appendChild(balloon);
+            });
+        }
+
+        function selectRed(balloon) {
+            if (balloon.classList.contains('popped')) return;
+            
+            // Deseleccionar previos
+            document.querySelectorAll('.balloon-red').forEach(b => b.classList.remove('selected'));
+            
+            // Seleccionar actual
+            balloon.classList.add('selected');
+            selectedRed = balloon;
+        }
+
+        function checkMatch(blueBalloon, itemData) {
+            if (!selectedRed || blueBalloon.classList.contains('popped')) {
+                if(!selectedRed) alert("Primero selecciona un globo ROJO (Concepto).");
+                return;
+            }
+
+            const redId = parseInt(selectedRed.dataset.id);
+            const blueId = parseInt(blueBalloon.dataset.id);
+
+            if (redId === blueId) {
+                // CORRECTO
+                handleMatch(selectedRed, blueBalloon, itemData);
+            } else {
+                // INCORRECTO
+                blueBalloon.style.animation = 'shake 0.5s';
+                setTimeout(() => blueBalloon.style.animation = 'float 3s ease-in-out infinite', 500);
+                alert("¡Inténtalo de nuevo! Ese concepto no corresponde a esa descripción.");
+                
+                // Reset selección roja
+                selectedRed.classList.remove('selected');
+                selectedRed = null;
+            }
+        }
+
+        function handleMatch(redB, blueB, data) {
+            // Pop Animation
+            redB.classList.add('popped');
+            blueB.classList.add('popped');
+
+            // Add to Board
+            const tbody = document.getElementById('board-body');
+            const row = document.createElement('tr');
+            row.className = 'success-row';
+            row.innerHTML = `<td><strong>${data.text}</strong></td><td>${data.desc}</td>`;
+            tbody.appendChild(row);
+
+            // Reset
+            selectedRed = null;
+            matchesFound++;
+            document.getElementById('game-status').innerText = `Aciertos: ${matchesFound} / 5`;
+
+            if (matchesFound === 5) {
+                setTimeout(() => {
+                    alert("¡Excelente! Has explotado todos los globos y conectado los conceptos correctamente.");
+                    markComplete(3);
+                }, 500);
+            }
+        }
+
+        // Inicializar juego al cargar
+        document.addEventListener('DOMContentLoaded', initGame);
+
+    </script>
+</body>
+</html>

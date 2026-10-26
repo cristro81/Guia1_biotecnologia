@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 0: Datos Institucionales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Paleta Institucional */
+            --sena-green: #39A900;
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00;
+            --bg-body: #F4F6F9;
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--sena-blue); 
+            line-height: 1.6; 
+            position: relative;
+        }
+
+        /* MARCA DE AGUA AJUSTADA */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("C:/Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología/Guia_1/imagenes/aula tecnologica.jpg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 85%; /* Imagen mucho más grande */
+            opacity: 0.45; /* Color más intenso/menos transparente */
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* HEADER */
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+
+        /* CONTENIDO */
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; position: relative; z-index: 1; }
+        .banner-container { width: 100%; margin-bottom: 2rem; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: white; text-align: center; }
+        .banner-container img { width: 100%; max-height: 300px; object-fit: cover; }
+        
+        .info-card { background: var(--bg-card); border-radius: var(--radius); padding: 3rem; box-shadow: var(--shadow); border-top: 5px solid var(--sena-green); }
+        .section-title { font-family: 'Montserrat'; color: var(--sena-green); font-size: 1.2rem; margin-bottom: 0.5rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+        .data-block { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+        .data-value { font-size: 1.1rem; color: var(--sena-blue); }
+        
+        ul.learning-outcomes { list-style: none; padding-left: 0; }
+        ul.learning-outcomes li { position: relative; padding-left: 25px; margin-bottom: 10px; }
+        ul.learning-outcomes li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--sena-green); position: absolute; left: 0; top: 2px; }
+
+        /* Estilos para la descripción con imagen */
+        .description-flex { display: flex; gap: 30px; align-items: flex-start; margin-top: 2rem; }
+        .description-text { flex: 1; text-align: justify; }
+        .description-image { width: 300px; border-radius: var(--radius); box-shadow: var(--shadow); }
+
+        /* BOTÓN DE FINALIZACIÓN */
+        .action-area { text-align: center; margin-top: 3rem; padding: 2rem; background: #e8f5e9; border-radius: var(--radius); border: 2px dashed var(--sena-green); }
+        .btn-complete { background: var(--sena-green); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(57, 169, 0, 0.3); transition: transform 0.2s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-complete:hover { transform: scale(1.05); background: #2e8b00; }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\SENA_T.jpg" alt="Logo SENA" style="height: 50px; width: auto;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+        </div>
+        <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\TECNO_V.jpg" alt="Logo Tecnoacademia" style="height: 50px; width: auto;">
+    </header>
+
+    <div class="container">
+        
+        <div class="banner-container">
+            <!-- Nota: El banner usa la ruta solicitada en la plantilla -->
+            <img src="GAMIFICACIÓN Academia Makers/Banners - Encabezados/Titulos_Mesa de trabajo 1 copia.jpg" alt="Banner Datos Institucionales" onerror="this.src='https://via.placeholder.com/1000x300?text=Identificación+de+la+Guía'">
+        </div>
+
+        <div class="info-card">
+            <h1 style="font-family:'Montserrat'; text-align:center; color:var(--sena-blue); margin-bottom:2rem;">Ficha Técnica de Misión</h1>
+
+            <div class="data-block">
+                <div class="section-title"><i class="fas fa-certificate"></i> Denominación del Programa</div>
+                <div class="data-value" style="font-weight:bold;">APLICACIONES Y DESARROLLO DE PROCESOS BIOTECNOLÓGICOS</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="data-block">
+                    <div class="section-title"><i class="fas fa-barcode"></i> Código de Ficha</div>
+                    <div class="data-value">22210045</div>
+                </div>
+                <div class="data-block">
+                    <div class="section-title"><i class="fas fa-clock"></i> Duración</div>
+                    <div class="data-value">48 Horas</div>
+                </div>
+            </div>
+
+            <div class="data-block">
+                <div class="section-title"><i class="fas fa-tools"></i> Competencia Técnica</div>
+                <div class="data-value">VALORAR MUESTRAS DE ACUERDO CON BUENAS PRÁCTICAS DE LABORATORIO Y TÉCNICA DE ANÁLISIS QUÍMICO INSTRUMENTAL.</div>
+            </div>
+
+            <div class="data-block">
+                <div class="section-title"><i class="fas fa-bullseye"></i> Resultados de Aprendizaje (RAP)</div>
+                <ul class="learning-outcomes">
+                    <li>Identificar la relación entre biología, ingeniería y tecnología en el desarrollo de tecnologías emergentes de acuerdo con estándares.</li>
+                </ul>
+            </div>
+
+            <div class="section-title"><i class="fas fa-info-circle"></i> Descripción del Programa</div>
+            <div class="description-flex">
+                <div class="description-text">
+                    <p>¡Bienvenidos al fascinante mundo de la biotecnología! Si estás interesado en la ciencia y la tecnología y cómo pueden trabajar juntas para hacer cambios positivos en el mundo, este curso de biotecnología es para ti. Durante las próximas semanas, exploraremos las formas en que la biotecnología está transformando la medicina, la agricultura, la energía y mucho más. ¿Te has preguntado cómo se producen los medicamentos que te ayudan a combatir enfermedades? ¿Sabías que la biotecnología también está transformando la producción de alimentos, haciéndolos más nutritivos y sostenibles? En este curso, descubrirás cómo los avances en la biotecnología están cambiando la forma en que vivimos y cómo estos avances pueden ayudarnos a solucionar algunos de los problemas más importantes del mundo.</p>
+                    <br>
+                    <p>En este curso de biotecnología, tendrás la oportunidad de aprender sobre estas emocionantes aplicaciones y poner en práctica tus conocimientos en laboratorios y experimentos diseñados específicamente para jóvenes como tú. Anímate a trabajar en equipo con tus compañeros, aprender sobre los temas propuestos y desarrollar todas las actividades relacionadas. El Facilitador dependiendo de la dinámica y viabilidad, podrá orientar con gamificación este curso, en dicho caso puedes obtener las insignias que encontrarás a lo largo de esta guía. Ten presente que a medida que avances en la guía, encontrarás diferentes Objetivos de Desarrollo Sostenible (ODS) y las letras de enfoque de aprendizaje STEAM (Science, Technology, Engineering, Art, Mathematics) relacionados con las actividades planteadas. ¡Únete a nosotros para una aventura científica inolvidable!</p>
+                </div>
+                <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\TECNOBOT QUIMICA.jpg" alt="Tecnobot Química" class="description-image">
+            </div>
+        </div>
+
+        <!-- NUEVO RECUADRO: MUNDO DE LOS MAKERS -->
+        <div class="info-card" style="margin-top: 2rem;">
+            <h2 style="font-family:'Montserrat'; text-align:center; color:var(--sena-blue); margin-bottom:1.5rem;">CONOCE EL MUNDO DE LOS MAKERS</h2>
+            
+            <div class="description-flex">
+                <div class="description-text" style="color: var(--text-gray);">
+                    <p>Te invitamos a dar el primer paso en una experiencia de aprendizaje diferente. Durante el desarrollo de esta guía recorrerás el fascinante mundo de los Makers, donde enfrentarás retos, resolverás problemas reales y pondrás a prueba todo tu ingenio, creatividad y pensamiento científico.</p>
+                    <br>
+                    <p>No estarás solo en esta aventura: tu facilitador y tus compañeros de formación te acompañarán en cada desafío, compartiendo conocimientos, ideas y aprendizajes que fortalecerán el trabajo colaborativo y el crecimiento personal.</p>
+                    <br>
+                    <p>Antes de comenzar el recorrido, es fundamental conocer las reglas del juego. Por ello, tu facilitador te presentará una sesión especial donde descubrirás cómo se ha gamificado esta guía, cuáles serán las dinámicas de participación y cómo avanzarás a lo largo de la experiencia.</p>
+                    <br>
+                    <p>Sigue el enlace a continuación, explora la presentación y prepárate para iniciar esta misión… porque cada reto que superes será un paso más hacia la construcción de soluciones que pueden transformar el mundo.</p>
+                    
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <a href="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\documentos\Ascenso de los Guardianes.pptx" style="display: inline-flex; align-items: center; gap: 10px; background: var(--sena-orange); color: white; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: bold; transition: transform 0.2s;">
+                            <i class="fas fa-file-powerpoint"></i> El Ascenso de los Guardianes Legendarios.
+                        </a>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; min-width: 300px;">
+                    <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\Titulos_Mesa de trabajo 1 copia.jpg" alt="Mundo Maker" style="width: 100%; border-radius: var(--radius); box-shadow: var(--shadow);">
+                    <img src="C:\Guias_Interactivas_Aplicaciones_Desarrollo_Biotecnología\Guia_1\imagenes\Tecnobot_Isometrico.jpg" alt="Tecnobot" style="width: 80%; border-radius: var(--radius);">
+                </div>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <h3 style="color:var(--sena-green); margin-bottom:1rem;">¿Información Recibida?</h3>
+            <p style="margin-bottom:1.5rem; color:var(--text-gray);">Confirma que has entendido los parámetros de la misión para desbloquear el siguiente nivel.</p>
+            <button class="btn-complete" onclick="finishModule()">
+                <i class="fas fa-check-circle"></i> Entendido, Misión Cumplida
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        function finishModule() {
+            // LÓGICA DE GAMIFICACIÓN CENTRALIZADA (Usa biotechState del tablero principal)
+            const savedState = localStorage.getItem('biotechState');
+            
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                
+                // 1. Marcar Módulo 0 como Completado
+                if (!state.completedModules) state.completedModules = [];
+                if (!state.completedModules.includes(0)) {
+                    state.completedModules.push(0);
+                }
+
+                // 2. Desbloquear Módulo 1 automáticamente
+                if (!state.unlockedModules) state.unlockedModules = [0];
+                if (!state.unlockedModules.includes(1)) {
+                    state.unlockedModules.push(1);
+                }
+
+                // 3. Guardar estado
+                localStorage.setItem('biotechState', JSON.stringify(state));
+                
+                alert("¡Datos Registrados! Módulo 01 (Seguridad) Desbloqueado.");
+                window.location.href = 'index.html';
+                
+            } else {
+                alert("No hay sesión activa. Por favor ingresa desde el inicio.");
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
